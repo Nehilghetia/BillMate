@@ -11,6 +11,7 @@ interface CartItem {
   product: {
     name: string
     price: number
+    category: string
   }
 }
 

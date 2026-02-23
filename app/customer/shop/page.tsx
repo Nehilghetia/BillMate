@@ -117,8 +117,21 @@ export default function ShopPage() {
   const handleBuyNow = (e: React.MouseEvent, product: Product) => {
     e.preventDefault()
     e.stopPropagation()
-    addToCart(product)
-    router.push('/customer/checkout')
+    // Prepare checkout data for the single product
+    const checkoutItem = {
+      productId: product.id,
+      quantity: 1,
+      product: {
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        category: product.category,
+        images: product.images
+      }
+    }
+    localStorage.setItem('checkoutData', JSON.stringify({ cart: [checkoutItem], discount: 0 }))
+    router.push('/checkout')
   }
 
   return (
