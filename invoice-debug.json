@@ -1,0 +1,35 @@
+{
+  "id": "a08d1c7a-9a1b-4360-8993-2e35d13ee584",
+  "bill_number": "BILL-1770750521063",
+  "customer_id": "2f780bde-1a8d-476e-9cea-4a958d813ea5",
+  "subtotal": 72999,
+  "tax_amount": 13139.82,
+  "discount_amount": 14599.8,
+  "discount_percentage": 0,
+  "total_amount": 71539.02,
+  "status": "paid",
+  "payment_method": "cod",
+  "notes": null,
+  "due_date": null,
+  "paid_date": null,
+  "created_by": "2f780bde-1a8d-476e-9cea-4a958d813ea5",
+  "created_at": "2026-02-10T19:08:43.169436+00:00",
+  "updated_at": "2026-02-10T19:08:43.169436+00:00",
+  "order_status": "Processing",
+  "bill_items": [
+    {
+      "id": "647e8eec-51b9-491e-ac4b-ff76c0cbf788",
+      "bill_id": "a08d1c7a-9a1b-4360-8993-2e35d13ee584",
+      "product_id": "262dde3e-79b3-49fa-b334-c22c3fd601ce",
+      "quantity": 1,
+      "unit_price": 72999,
+      "tax_rate": 18,
+      "line_total": 72999,
+      "created_at": "2026-02-10T19:08:43.53421+00:00",
+      "price": null,
+      "products": {
+        "name": "OnePlus 15 "
+      }
+    }
+  ]
+}
