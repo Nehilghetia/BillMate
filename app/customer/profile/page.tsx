@@ -2,18 +2,20 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/lib/auth-context'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { User, Phone, MapPin, Mail, Save, ArrowLeft, CheckCircle2 } from 'lucide-react'
+import { User, Phone, MapPin, Mail, Save, ArrowLeft, CheckCircle2, LogOut } from 'lucide-react'
 import Link from 'next/link'
 import { updateUserProfile } from '@/app/actions/user'
 import { useToast } from '@/lib/toast-context'
 import { ShopHeader } from '@/components/shop-header'
 
 export default function ProfilePage() {
-    const { user, profile, fetchProfile, loading: authLoading } = useAuth()
+    const { user, profile, fetchProfile, signOut, loading: authLoading } = useAuth()
+    const router = useRouter()
     const { toast } = useToast()
     const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState({
@@ -52,6 +54,16 @@ export default function ProfilePage() {
         }
     }
 
+    const handleLogout = async () => {
+        try {
+            await signOut()
+            toast.success('Logged out successfully')
+            router.push('/auth/login')
+        } catch (error) {
+            toast.error('Failed to logout')
+        }
+    }
+
     if (authLoading) {
         return (
             <div className="flex justify-center items-center py-20">
@@ -74,11 +86,20 @@ export default function ProfilePage() {
                             <p className="text-slate-500 mt-3 text-lg font-medium max-w-xl">Optimize your personal manifest and logistics preferences for a tailored acquisition experience.</p>
                         </div>
 
-                        <Link href="/">
-                            <Button variant="ghost" className="h-12 px-6 rounded-xl text-slate-500 font-bold hover:bg-slate-50 border border-slate-100 transition-all group">
-                                <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Shop
+                        <div className="flex items-center gap-3">
+                            <Link href="/">
+                                <Button variant="ghost" className="h-12 px-6 rounded-xl text-slate-500 font-bold hover:bg-slate-50 border border-slate-100 transition-all group">
+                                    <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Shop
+                                </Button>
+                            </Link>
+                            <Button
+                                onClick={handleLogout}
+                                variant="ghost"
+                                className="h-12 px-6 rounded-xl text-red-500 font-bold hover:bg-red-50 border border-red-100 transition-all group"
+                            >
+                                <LogOut className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" /> Logout
                             </Button>
-                        </Link>
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
