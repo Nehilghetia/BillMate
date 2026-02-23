@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { ShoppingCart, LogOut, FileText, Store, Receipt, ShoppingBag, User } from 'lucide-react'
+import { ShoppingCart, LogOut, FileText, Store, Receipt, ShoppingBag, User, ChevronDown, X } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
 import { useCart } from '@/lib/cart-context'
 import { useRouter } from 'next/navigation'
@@ -11,6 +12,7 @@ export function ShopHeader() {
     const { user, profile, signOut } = useAuth()
     const router = useRouter()
     const { cart } = useCart()
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
 
     const handleLogout = async () => {
         await signOut()
@@ -22,13 +24,27 @@ export function ShopHeader() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-20">
                     {/* Left side: Logo and Main Nav */}
-                    <div className="flex items-center space-x-4 md:space-x-12">
-                        <Link href="/" className="flex items-center shrink-0 group">
+                    <div className="flex items-center space-x-4 md:space-x-12 relative">
+                        {/* Mobile Logo Toggle */}
+                        <div
+                            className="lg:hidden flex items-center shrink-0 group cursor-pointer select-none"
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        >
+                            <div className="bg-blue-600 p-2 rounded-[14px] mr-2 group-hover:rotate-12 transition-transform duration-300 shadow-lg shadow-blue-200">
+                                <ShoppingBag className="w-5 h-5 text-white" />
+                            </div>
+                            <span className="text-lg font-black text-slate-900 tracking-tight italic flex items-center">
+                                BillMate <ChevronDown className={`w-4 h-4 ml-1 text-blue-600 transition-transform duration-300 ${isMenuOpen ? 'rotate-180' : ''}`} />
+                            </span>
+                        </div>
+
+                        {/* Desktop Logo Link */}
+                        <Link href="/" className="hidden lg:flex items-center shrink-0 group">
                             <div className="bg-blue-600 p-2 rounded-[14px] mr-3 group-hover:rotate-12 transition-transform duration-300 shadow-lg shadow-blue-200">
                                 <ShoppingBag className="w-5 h-5 text-white" />
                             </div>
-                            <span className="text-lg md:text-xl font-black text-slate-900 tracking-tight whitespace-nowrap italic">
-                                BillMate <span className="text-blue-600 not-italic hidden sm:inline">Store.</span>
+                            <span className="text-xl font-black text-slate-900 tracking-tight whitespace-nowrap italic">
+                                BillMate <span className="text-blue-600 not-italic">Store.</span>
                             </span>
                         </Link>
 
@@ -115,6 +131,86 @@ export function ShopHeader() {
                     </div>
                 </div>
             </div>
+
+            {/* Mobile Dropdown Menu */}
+            {isMenuOpen && (
+                <div className="lg:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-100 shadow-xl z-[90] animate-in slide-in-from-top duration-300">
+                    <div className="p-4 space-y-2">
+                        <Link
+                            href="/customer/shop"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="flex items-center p-4 rounded-xl hover:bg-blue-50 text-slate-900 font-bold transition-colors group"
+                        >
+                            <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center mr-4 group-hover:bg-blue-100">
+                                <Store className="w-5 h-5 text-blue-600" />
+                            </div>
+                            Shop
+                        </Link>
+
+                        <Link
+                            href="/customer/invoices"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="flex items-center p-4 rounded-xl hover:bg-blue-50 text-slate-900 font-bold transition-colors group"
+                        >
+                            <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center mr-4 group-hover:bg-blue-100">
+                                <Receipt className="w-5 h-5 text-blue-600" />
+                            </div>
+                            Invoices
+                        </Link>
+
+                        <Link
+                            href="/customer/orders"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="flex items-center p-4 rounded-xl hover:bg-blue-50 text-slate-900 font-bold transition-colors group"
+                        >
+                            <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center mr-4 group-hover:bg-blue-100">
+                                <FileText className="w-5 h-5 text-blue-600" />
+                            </div>
+                            My Orders
+                        </Link>
+
+                        <Link
+                            href="/cart"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="flex items-center p-4 rounded-xl hover:bg-blue-50 text-slate-900 font-bold transition-colors group"
+                        >
+                            <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center mr-4 group-hover:bg-blue-100 relative">
+                                <ShoppingCart className="w-5 h-5 text-blue-600" />
+                                {cart.length > 0 && (
+                                    <span className="absolute -top-1 -right-1 bg-blue-600 text-white rounded-full min-w-[16px] h-4 flex items-center justify-center text-[8px] font-black border border-white">
+                                        {cart.reduce((a, b) => a + b.quantity, 0)}
+                                    </span>
+                                )}
+                            </div>
+                            My Cart
+                        </Link>
+
+                        {user ? (
+                            <button
+                                onClick={() => {
+                                    handleLogout()
+                                    setIsMenuOpen(false)
+                                }}
+                                className="w-full flex items-center p-4 rounded-xl hover:bg-red-50 text-red-600 font-bold transition-colors group mt-4 border-t border-slate-50 pt-6"
+                            >
+                                <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center mr-4 group-hover:bg-red-100">
+                                    <LogOut className="w-5 h-5" />
+                                </div>
+                                Logout
+                            </button>
+                        ) : (
+                            <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-50 mt-4">
+                                <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
+                                    <Button variant="ghost" className="w-full h-12 rounded-xl text-slate-600 font-bold">Login</Button>
+                                </Link>
+                                <Link href="/auth/signup" onClick={() => setIsMenuOpen(false)}>
+                                    <Button className="w-full h-12 bg-slate-900 hover:bg-blue-600 text-white font-bold rounded-xl shadow-lg">Join Now</Button>
+                                </Link>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </nav>
     )
 }
