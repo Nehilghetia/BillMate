@@ -22,13 +22,13 @@ export function ShopHeader() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-20">
                     {/* Left side: Logo and Main Nav */}
-                    <div className="flex items-center space-x-12">
+                    <div className="flex items-center space-x-4 md:space-x-12">
                         <Link href="/" className="flex items-center shrink-0 group">
                             <div className="bg-blue-600 p-2 rounded-[14px] mr-3 group-hover:rotate-12 transition-transform duration-300 shadow-lg shadow-blue-200">
                                 <ShoppingBag className="w-5 h-5 text-white" />
                             </div>
-                            <span className="text-xl font-black text-slate-900 tracking-tight">
-                                BillMate <span className="text-blue-600 italic">Store.</span>
+                            <span className="text-lg md:text-xl font-black text-slate-900 tracking-tight whitespace-nowrap italic">
+                                BillMate <span className="text-blue-600 not-italic hidden sm:inline">Store.</span>
                             </span>
                         </Link>
 
@@ -49,11 +49,11 @@ export function ShopHeader() {
                     </div>
 
                     {/* Right side: Actions */}
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1.5 sm:gap-4">
                         <Link href="/cart">
                             <Button
                                 variant="ghost"
-                                className="relative bg-slate-50 hover:bg-blue-50 text-slate-600 hover:text-blue-600 h-11 px-5 rounded-xl border border-transparent hover:border-blue-100 transition-all group lg:min-w-[110px]"
+                                className="relative bg-slate-50 hover:bg-blue-50 text-slate-600 hover:text-blue-600 h-10 md:h-11 px-3 md:px-5 rounded-xl border border-transparent hover:border-blue-100 transition-all group lg:min-w-[110px]"
                             >
                                 <ShoppingCart className="w-4 h-4 md:mr-2 transition-transform group-hover:-translate-y-0.5" />
                                 <span className="hidden md:inline font-bold">Cart</span>
@@ -101,12 +101,12 @@ export function ShopHeader() {
                                 </Link>
                             </div>
                         ) : (
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1.5 sm:gap-3">
                                 <Link href="/auth/login">
-                                    <Button variant="ghost" className="h-11 px-6 rounded-xl text-slate-600 font-bold">Login</Button>
+                                    <Button variant="ghost" className="h-10 md:h-11 px-3 md:px-6 rounded-xl text-slate-600 font-bold text-sm md:text-base">Login</Button>
                                 </Link>
                                 <Link href="/auth/signup">
-                                    <Button className="h-11 px-8 bg-slate-900 hover:bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-slate-200 transition-all active:scale-95">
+                                    <Button className="h-10 md:h-11 px-4 md:px-8 bg-slate-900 hover:bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-slate-200 transition-all active:scale-95 text-sm md:text-base whitespace-nowrap">
                                         Join Now
                                     </Button>
                                 </Link>
