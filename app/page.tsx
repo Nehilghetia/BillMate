@@ -34,6 +34,26 @@ export default function LandingPage() {
   }
 
   useEffect(() => {
+    // Handle auth callback/errors from hash
+    const hash = window.location.hash
+    if (hash) {
+      const params = new URLSearchParams(hash.substring(1))
+      const error = params.get('error_description') || params.get('error')
+      const code = params.get('error_code')
+
+      if (error) {
+        toast.error(`${error}${code === 'otp_expired' ? ' - Please request a new link.' : ''}`)
+        // Clean up hash
+        window.history.replaceState(null, '', window.location.pathname)
+      } else if (hash.includes('access_token')) {
+        toast.success('Login successful! Welcome back.')
+        // Clean up hash
+        window.history.replaceState(null, '', window.location.pathname)
+        // Force session refresh if needed
+        supabase.auth.getSession()
+      }
+    }
+
     async function fetchFeatured() {
       const { data } = await supabase
         .from('products')
@@ -54,7 +74,7 @@ export default function LandingPage() {
       setLoading(false)
     }
     fetchFeatured()
-  }, [])
+  }, [supabase, toast])
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-sans">
@@ -199,7 +219,7 @@ export default function LandingPage() {
                 {/* Image Background */}
                 <div className="absolute inset-0">
                   <img
-                    src="https://images.unsplash.com/photo-1556656793-02715d8dd6f8?w=800&q=80"
+                    src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&q=80"
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                     alt="Mobile Mania"
                   />

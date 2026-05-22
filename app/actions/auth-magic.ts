@@ -19,7 +19,7 @@ export async function sendCustomMagicLink(email: string) {
             type: 'magiclink',
             email: email,
             options: {
-                redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify`
+                redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/`
             }
         })
 
