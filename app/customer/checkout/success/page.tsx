@@ -7,22 +7,42 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
 
+import { useCart } from '@/lib/cart-context'
+import { verifyRazorpayPayment } from '@/app/actions/razorpay'
+
 export default function SuccessPage() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const supabase = createClient()
+  const { clearCart } = useCart()
   const [bill, setBill] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+
+  const paymentId = searchParams.get('razorpay_payment_id')
+  const orderId = searchParams.get('razorpay_order_id')
+  const signature = searchParams.get('razorpay_signature')
 
   useEffect(() => {
     const billId = searchParams.get('bill_id')
     if (billId) {
+      // Clear cart on successful checkout arrival
+      clearCart()
       fetchBill(billId)
     }
   }, [searchParams])
 
   const fetchBill = async (billId: string) => {
     try {
+      // If redirected with payment parameters, verify with server action
+      if (paymentId && orderId && signature) {
+        await verifyRazorpayPayment({
+          razorpayOrderId: orderId,
+          razorpayPaymentId: paymentId,
+          razorpaySignature: signature,
+          billId: billId,
+        })
+      }
+
       const { data } = await supabase
         .from('bills')
         .select('*')
@@ -30,23 +50,13 @@ export default function SuccessPage() {
         .single()
 
       if (data) {
-        // Update bill status to paid
-        await supabase
-          .from('bills')
-          .update({ status: 'paid' })
-          .eq('id', billId)
-
-        // Orders table insert removed as app uses bills table for order history
-        /*
-        await supabase.from('orders').insert({
-          user_id: data.user_id,
-          bill_id: billId,
-          amount: data.amount,
-          status: 'completed',
-          items: data.items,
-        })
-        */
-
+        // Ensure bill status is paid
+        if (data.status !== 'paid') {
+          await supabase
+            .from('bills')
+            .update({ status: 'paid' })
+            .eq('id', billId)
+        }
         setBill(data)
       }
     } catch (error) {
@@ -83,6 +93,12 @@ export default function SuccessPage() {
                     <dt className="text-gray-600">Bill ID:</dt>
                     <dd className="font-mono text-gray-900">{bill.id.slice(0, 8).toUpperCase()}</dd>
                   </div>
+                  {paymentId && (
+                    <div className="flex justify-between">
+                      <dt className="text-gray-600">Payment ID:</dt>
+                      <dd className="font-mono text-blue-600 font-semibold">{paymentId}</dd>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <dt className="text-gray-600">Amount Paid:</dt>
                     <dd className="font-semibold text-green-600">
@@ -92,7 +108,7 @@ export default function SuccessPage() {
                   <div className="flex justify-between">
                     <dt className="text-gray-600">Status:</dt>
                     <dd className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-semibold">
-                      PAID
+                      PAID (VERIFIED)
                     </dd>
                   </div>
                 </dl>

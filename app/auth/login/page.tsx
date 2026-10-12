@@ -173,24 +173,16 @@ export default function LoginPage() {
       }
 
       await handleSessionSuccess(data.user)
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An error occurred during login'
+    } catch (err: any) {
+      let errorMessage = err instanceof Error ? err.message : 'An error occurred during login'
+      if (errorMessage === 'Failed to fetch' || err?.name === 'TypeError') {
+        errorMessage = 'Network Error: Unable to connect to Supabase authentication server. Please check your internet connection or restart the dev server (npm run dev).'
+      }
       console.error('[v0] Login error:', errorMessage)
       setError(errorMessage)
-      setLoading(false) // Ensure loading is off on error
-    } finally {
-      if (!verificationFixing && !redirecting) {
-        // Only stop loading if NOT redirecting and NOT fixing
-        // NOTE: redirecting state update might happen in async, so we might need a ref or check state differently.
-        // Actually, setRedirecting(true) happens before return.
-        // But state updates are batched/async.
-        // However, 'finally' runs after 'handleSessionSuccess' PROMISE resolves.
-        // 'handleSessionSuccess' sets redirecting to true.
-        // We can't easily check 'redirecting' state variable here immediately?
-        // Actually, we can just NOT set loading false in finally, but instead set it false in catch blocks of the callees.
-        // I moved setLoading(false) to catch/error blocks above.
-      }
+      setLoading(false)
     }
+
   }
 
   const handleSendOtp = async (e: React.FormEvent) => {

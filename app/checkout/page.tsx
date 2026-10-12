@@ -76,7 +76,7 @@ export default function CheckoutPage() {
                                 <span className="text-blue-700 text-[10px] font-black tracking-widest uppercase">Secure Acquisition</span>
                             </div>
                             <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Finalize <span className="text-blue-600 italic">Order.</span></h1>
-                            <p className="text-slate-500 mt-3 text-lg font-medium max-w-xl">Enter your logistics details and select a preferred payment instrument to complete your premium acquisition.</p>
+                            <p className="text-slate-500 mt-3 text-lg font-medium max-w-xl">Enter your logistics details to complete your premium acquisition.</p>
                         </div>
 
                         <Link href="/cart">
